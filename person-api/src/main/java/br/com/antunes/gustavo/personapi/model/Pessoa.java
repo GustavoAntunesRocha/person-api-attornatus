@@ -24,7 +24,7 @@ public class Pessoa {
     private LocalDate dataNascimento;
 
     @OneToMany(cascade = CascadeType.ALL)
-	@JoinColumn(name = "address_id", referencedColumnName = "id")
+	@JoinColumn(name = "pessoa_id", referencedColumnName = "id")
     private List<Endereco> enderecos;
 
     public Pessoa() {
