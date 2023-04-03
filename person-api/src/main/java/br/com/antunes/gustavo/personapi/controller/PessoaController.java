@@ -51,8 +51,15 @@ public class PessoaController {
 		try {
 			if(id != null) {
 				return ResponseEntity.ok(pessoaService.convertToDTO(pessoaService.getById(id)));
+			} else if(nome != null) {
+				List<Pessoa> pessoas = pessoaService.findByName(nome);
+				List<PessoaDTO> pessoaDTOs = new ArrayList<>();
+				for (Pessoa pessoa : pessoas) {
+					pessoaDTOs.add(pessoaService.convertToDTO(pessoa));
+				}
+				return ResponseEntity.ok(pessoaDTOs);
 			}
-			List<Pessoa> pessoas = pessoaService.findByName(nome);
+			List<Pessoa> pessoas = pessoaService.findAll();
 			List<PessoaDTO> pessoaDTOs = new ArrayList<>();
 			for (Pessoa pessoa : pessoas) {
 				pessoaDTOs.add(pessoaService.convertToDTO(pessoa));
@@ -64,7 +71,7 @@ public class PessoaController {
 	}
 	
 	@Operation(description = "Endpoint para cadastrar uma pessoa", responses = {
-			@ApiResponse(responseCode = "200", description = "Pessoa cadastrada com sucesso", 
+			@ApiResponse(responseCode = "201", description = "Pessoa cadastrada com sucesso", 
 				content = @Content(mediaType = "application/json", schema = @Schema(implementation = PessoaDTO.class))),
 			@ApiResponse(responseCode = "404", description = "Nenhuma pessoa encontrada",
 				content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiErrorResponse.class)))
@@ -74,7 +81,7 @@ public class PessoaController {
 		try {
 			Pessoa pessoa = pessoaService.create(pessoaService.convertToEntity(pessoaDTO));
 			
-			return ResponseEntity.ok(pessoaService.convertToDTO(pessoa));
+			return ResponseEntity.status(HttpStatus.CREATED).body(pessoaService.convertToDTO(pessoa));
 		} catch (EntityNotFoundException e) {
 			return new ResponseEntity<>(handleCustomException(e, HttpStatus.NOT_FOUND), HttpStatus.NOT_FOUND);
 		}

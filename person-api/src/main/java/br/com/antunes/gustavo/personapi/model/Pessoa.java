@@ -4,6 +4,9 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -21,10 +24,12 @@ public class Pessoa {
 
     private String nome;
 
+    @JsonFormat(pattern = "dd-MM-yyyy")
     private LocalDate dataNascimento;
 
     @OneToMany(cascade = CascadeType.ALL)
 	@JoinColumn(name = "pessoa_id", referencedColumnName = "id")
+    @JsonProperty("enderecoDTOs")
     private List<Endereco> enderecos;
 
     public Pessoa() {
